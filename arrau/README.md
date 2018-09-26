@@ -1,11 +1,5 @@
-# CoVal: A coreference evaluation tool for the CoNLL and ARRAU datasets
+# Using CoVal for evaluating the ARRAU dataset
 
-We provide the implementation of the common evaluation metrics including MUC, B-cubed, CEAFe, and LEA for both CoNLL and ARRAU datasets.
-
-
-### Requirement
-
-This evaluation tool requires numpy, scipy, and scikit-learn packages.
 
 ## Usage
 
@@ -42,7 +36,7 @@ If this option is included, separate recall, precision, and F1 scores would be r
 
 As a result, if you only run "python arrau-scorer.py <key> <system>" without any additional options, the evaluation is performed by incorporating all coreferent and singleton markables and without considering non-referring markables.
 
-Overall, above options enable the following evaluation modes:
+Overall, the above options enable the following evaluation modes:
 
 # Evaluating coreference relations only
 
