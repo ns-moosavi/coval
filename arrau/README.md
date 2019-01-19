@@ -5,11 +5,11 @@
 
 The following command evaluates coreference outputs related to the ARRAU dataset:
 
-python arrau-scorer.py <key> <system> [options]
+python arrau-scorer.py key system [options]
 
-<Key> is either a key file or a directory that contains key files. The script only processes the key files that end with .CONLL. If <key> is a directory, the script recursively looks for all .CONLL files that are located in <key> or one of its subdirectories.
+'key' is either a key file or a directory that contains key files. The script only processes the key files that end with .CONLL. If 'key' is a directory, the script recursively looks for all .CONLL files that are located in 'key' or one of its subdirectories.
 
-<system> is either a system generated coreference output or a directory that contains coreference output files. All system file names should also end with .CONLL. 
+'system' is either a system generated coreference output or a directory that contains coreference output files. All system file names should also end with .CONLL. 
 
 ## Evaluation Metrics
 
@@ -18,13 +18,13 @@ The above command reports MUC [Vilain et al, 1995], B-cubed [Bagga and Baldwin, 
 You can also only select specific metrics by including one or some of the 'muc', 'bcub', 'ceafe' and 'lea' options in the input arguments.
 For instance, the following command only reports the CEAFe and LEA scores:
 
-python arrau-scorer.py <key> <system> ceafe lea
+python arrau-scorer.py key system ceafe lea
 
-The first and second arguments after "arrau-scorer.py" have to be <key> and <system>, respectively. The order of other options is arbitrary. 
+The first and second arguments after 'arrau-scorer.py' have to be 'key' and 'system', respectively. The order of other options is arbitrary. 
 
 ## Evaluation Modes
 
-Apart from coreference relations, the ARRAU dataset also contains annotations for singletons and non-referring markables. Non-referring markables are annotated with the "non_referring" tag and are therefore distinguishable from referring markables (coreferent markables or singletons). 
+Apart from coreference relations, the ARRAU dataset also contains annotations for singletons and non-referring markables. Non-referring markables are annotated with the 'non_referring' tag and are therefore distinguishable from referring markables (coreferent markables or singletons). 
 After extracting all markables, all markables whose corresponding coreference chain is of size one, are specified as singletons.
 By distinguishing coreferent markables, singletons and non-referring markables, we can perform coreference evaluations in various settings by using the following two options:
 
@@ -34,7 +34,7 @@ The handling of singletons
 2) keep_non_referring:  if this option is included in the command, all markables that are annotated as non_referring, both in the key and system files, will be included in the evaluation.
 If this option is included, separate recall, precision, and F1 scores would be reported for identifying the annotated non-referring markables.
 
-As a result, if you only run "python arrau-scorer.py <key> <system>" without any additional options, the evaluation is performed by incorporating all coreferent and singleton markables and without considering non-referring markables.
+As a result, if you only run 'python arrau-scorer.py key system' without any additional options, the evaluation is performed by incorporating all coreferent and singleton markables and without considering non-referring markables.
 
 Overall, the above options enable the following evaluation modes:
 
@@ -43,7 +43,7 @@ Overall, the above options enable the following evaluation modes:
 This evaluation mode is compatible with the coreference evaluation of the OntoNotes dataset in which only coreferring markables are evaluated.
 To do so, the remove_singletons option should be included in the evaluation command:
 
-python arrau-scorer.py <key> <system> remove_singletons
+python arrau-scorer.py key system remove_singletons
 
 In this mode, all singletons and non-referring mentions will be skipped from coreference evaluations.
 
@@ -51,7 +51,7 @@ In this mode, all singletons and non-referring mentions will be skipped from cor
 
 This is the default evaluation mode of the ARRAU dataset and its corresponding command is
 
-python arrau-scorer.py <key> <system>
+python arrau-scorer.py key system
 
 In this mode, both coreferring markables and singletons are evaluated by the specified evaluation metrics.
 Apart from the MUC metric, all other evaluation metrics handle singletons.
@@ -66,7 +66,7 @@ However, a separate score would be reported for identifying the annotated non-re
 
 The following command performs coreference evaluation using this mode
 
-python arrau-scorer.py <key> <system> keep_non_referring
+python arrau-scorer.py key system keep_non_referring
 
  
 ## Minimum Span Evaluation
@@ -78,5 +78,5 @@ For minimum span evaluation, a system detected boundary for a markable is consid
 To perform minimum span evaluations, add one of the 'MIN', 'min' or 'min_spans' options to the input arguments.
 For instance, the following command reports all standard evaluation metrics using minimum spans to specify markables instead of maximum spans:
 
-python arrau-scorer.py <key> <system> min
+python arrau-scorer.py key system min
 
