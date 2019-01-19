@@ -9,10 +9,10 @@
 The following command evaluates coreference outputs related to the CoNLL dataset:
 
 
-python scorer.py <key> <system> [options]
+python scorer.py key system [options]
 
 
-<Key> and <system> are the key and system files, respectively.
+'key' and 'system' are the key and system files, respectively.
 
 
 
@@ -27,10 +27,10 @@ You can also only select specific metrics by including one or some of the 'muc',
 For instance, the following command only reports the CEAFe and LEA scores:
 
 
-python scorer.py <key> <system> ceafe lea
+python scorer.py key system ceafe lea
 
 
-The first and second arguments after "scorer.py" have to be <key> and <system>, respectively. The order of other options is arbitrary.
+The first and second arguments after 'scorer.py' have to be 'key' and 'system', respectively. The order of other options is arbitrary.
 
 
 ## Evaluation Modes
@@ -43,7 +43,7 @@ After extracting all mentions of key or system files, mentions whose correspondi
 
 The default evaluation mode will include singletons in evaluations if they are included in the key or the system files.
 
-By including the "remove_singletons" or "remove_singleton" options, all singletons in the key and system files will be excluded from the evaluation.
+By including the 'remove_singletons' or 'remove_singleton' options, all singletons in the key and system files will be excluded from the evaluation.
 
 
 2) NP only
