@@ -1,6 +1,4 @@
-import os
 import sys
-
 from conll import reader
 from eval import evaluator
 
@@ -37,7 +35,6 @@ def main():
         if not metrics:
             metrics = allmetrics
 
-
     evaluate(key_file, sys_file, metrics,
             NP_only, remove_nested, keep_singletons)
 
@@ -47,22 +44,22 @@ def evaluate(key_file, sys_file, metrics,
     doc_coref_infos = reader.get_coref_infos(
             key_file, sys_file, NP_only, remove_nested, keep_singletons)
 
-    conll=0
+    conll = 0
     conll_subparts_num = 0
 
     for name, metric in metrics:
         recall, precision, f1 = evaluator.evaluate_documents(
                 doc_coref_infos, metric, beta=1)
         if name in ["muc", "bcub", "ceafe"]:
-            conll+=f1
-            conll_subparts_num+=1
+            conll += f1
+            conll_subparts_num += 1
 
-        print(name.ljust(10), 'Recall: %.2f'%(recall*100),
-                ' Precision: %.2f'%(precision*100), ' F1: %.2f'%(f1*100))
+        print('%-10s Recall: %.2f Precision: %.2f F1: %.2f' % (
+                name, recall * 100, precision * 100, f1 * 100))
 
-    if conll_subparts_num ==3:
-        conll = (conll/3)*100
-        print('CoNLL score: %.2f'%conll)
+    if conll_subparts_num == 3:
+        conll = (conll / 3) * 100
+        print('CoNLL score: %.2f' % conll)
 
 
 if __name__ == '__main__':
