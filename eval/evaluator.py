@@ -102,6 +102,14 @@ def get_document_evaluations(doc_coref_infos, metric, beta=1):
     return evaluator.get_aggregated_values()
 
 
+def mentions(clusters, mention_to_gold):
+    setofmentions = set(mention
+            for cluster in clusters
+                for mention in cluster)
+    correct = setofmentions & set(mention_to_gold.keys())
+    return len(correct), len(setofmentions)
+
+
 def b_cubed(clusters, mention_to_gold):
     num, dem = 0, 0
 
