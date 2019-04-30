@@ -1,35 +1,40 @@
-import numpy as np
+"""Some parts are borrowed from
+https://github.com/clarkkev/deep-coref/blob/master/evaluation.py
+"""
 from collections import Counter
+import numpy as np
 from sklearn.utils.linear_assignment_ import linear_assignment
 
-"""
-Some parts are borrowed from https://github.com/clarkkev/deep-coref/blob/master/evaluation.py
-"""
 
 def f1(p_num, p_den, r_num, r_den, beta=1):
     p = 0 if p_den == 0 else p_num / float(p_den)
     r = 0 if r_den == 0 else r_num / float(r_den)
-    return 0 if p + r == 0 else (1 + beta * beta) * p * r / (beta * beta * p + r)
+    return (0 if p + r == 0
+            else (1 + beta * beta) * p * r / (beta * beta * p + r))
+
 
 def evaluate_non_referrings(doc_non_referring_infos):
-    tp, tn, fp, fn = 0, 0, 0, 0
+    tp, _tn, fp, fn = 0, 0, 0, 0
 
     for doc_id in doc_non_referring_infos:
-        key_non_referrings, sys_non_referrings = doc_non_referring_infos[doc_id]
+        key_non_referrings, sys_non_referrings = doc_non_referring_infos[
+                doc_id]
         for m in key_non_referrings:
             if m in sys_non_referrings:
-                tp +=1
+                tp += 1
             else:
-                fn +=1
+                fn += 1
         for m in sys_non_referrings:
             if m not in key_non_referrings:
-                fp +=1
+                fp += 1
 
-    recall = tp/float(tp+fn) if (tp+fn) > 0 else 0
-    precision = tp/float(tp+fp) if (tp+fp) > 0 else 0
-    f1 = 2*recall*precision / (recall+precision) if (recall+precision) > 0 else 0
+    recall = tp / float(tp + fn) if (tp + fn) > 0 else 0
+    precision = tp / float(tp + fp) if (tp + fp) > 0 else 0
+    f1 = (2 * recall * precision / (recall + precision)
+            if (recall + precision) > 0 else 0)
 
     return recall, precision, f1
+
 
 class Evaluator:
     def __init__(self, metric, beta=1, keep_aggregated_values=False):
@@ -47,15 +52,17 @@ class Evaluator:
             self.aggregated_r_num = []
             self.aggregated_r_den = []
 
-    def update(self, coref_info ):
-        key_clusters, sys_clusters, \
-           key_mention_sys_cluster, sys_mention_key_cluster = coref_info
+    def update(self, coref_info):
+        (key_clusters, sys_clusters, key_mention_sys_cluster,
+                sys_mention_key_cluster) = coref_info
 
         if self.metric == ceafe:
             pn, pd, rn, rd = self.metric(sys_clusters, key_clusters)
         elif self.metric == lea:
-            pn, pd = self.metric(sys_clusters, key_clusters, sys_mention_key_cluster)
-            rn, rd = self.metric(key_clusters, sys_clusters, key_mention_sys_cluster)
+            pn, pd = self.metric(sys_clusters, key_clusters,
+                    sys_mention_key_cluster)
+            rn, rd = self.metric(key_clusters, sys_clusters,
+                    key_mention_sys_cluster)
         else:
             pn, pd = self.metric(sys_clusters, sys_mention_key_cluster)
             rn, rd = self.metric(key_clusters, key_mention_sys_cluster)
@@ -71,7 +78,11 @@ class Evaluator:
             self.aggregated_r_den.append(rd)
 
     def get_f1(self):
-        return f1(self.p_num, self.p_den, self.r_num, self.r_den, beta=self.beta)
+        return f1(self.p_num,
+                self.p_den,
+                self.r_num,
+                self.r_den,
+                beta=self.beta)
 
     def get_recall(self):
         return 0 if self.r_num == 0 else self.r_num / float(self.r_den)
@@ -84,16 +95,19 @@ class Evaluator:
 
     def get_counts(self):
         return self.p_num, self.p_den, self.r_num, self.r_den
-    
+
     def get_aggregated_values(self):
-        return self.aggregated_p_num, self.aggregated_p_den, self.aggregated_r_num, self.aggregated_r_den
+        return (self.aggregated_p_num, self.aggregated_p_den,
+                self.aggregated_r_num, self.aggregated_r_den)
 
 
 def evaluate_documents(doc_coref_infos, metric, beta=1):
     evaluator = Evaluator(metric, beta=beta)
     for doc_id in doc_coref_infos:
         evaluator.update(doc_coref_infos[doc_id])
-    return evaluator.get_recall(), evaluator.get_precision(), evaluator.get_f1()
+    return (evaluator.get_recall(), evaluator.get_precision(),
+            evaluator.get_f1())
+
 
 def get_document_evaluations(doc_coref_infos, metric, beta=1):
     evaluator = Evaluator(metric, beta=beta, keep_aggregated_values=True)
@@ -103,9 +117,7 @@ def get_document_evaluations(doc_coref_infos, metric, beta=1):
 
 
 def mentions(clusters, mention_to_gold):
-    setofmentions = set(mention
-            for cluster in clusters
-                for mention in cluster)
+    setofmentions = set(mention for cluster in clusters for mention in cluster)
     correct = setofmentions & set(mention_to_gold.keys())
     return len(correct), len(setofmentions)
 
@@ -114,7 +126,6 @@ def b_cubed(clusters, mention_to_gold):
     num, dem = 0, 0
 
     for c in clusters:
-
         gold_counts = Counter()
         correct = 0
         for m in c:
@@ -165,7 +176,8 @@ def lea(input_clusters, output_clusters, mention_to_gold):
     for c in input_clusters:
         if len(c) == 1:
             all_links = 1
-            if c[0] in mention_to_gold and len(output_clusters[mention_to_gold[c[0]]]) == 1:
+            if c[0] in mention_to_gold and len(
+                    output_clusters[mention_to_gold[c[0]]]) == 1:
                 common_links = 1
             else:
                 common_links = 0
@@ -175,13 +187,19 @@ def lea(input_clusters, output_clusters, mention_to_gold):
             for i, m in enumerate(c):
                 if m in mention_to_gold:
                     for m2 in c[i + 1:]:
-                        if m2 in mention_to_gold and mention_to_gold[m] == mention_to_gold[m2]:
+                        if m2 in mention_to_gold and mention_to_gold[
+                                m] == mention_to_gold[m2]:
                             common_links += 1
-                        #else:
-                        #    print('!! ', m2, '--', m2.get_span(), ' ', m2.min_spans, ' ', mention_to_gold[m], ' ' , mention_to_gold[m2], ' ' , [str(s) for s in output_clusters[mention_to_gold[m]]], ' -- ' , [str(s) for s in output_clusters[mention_to_gold[m2]]])
+                        # else:
+                        #    print('!! ', m2, '--', m2.get_span(), ' ',
+                        #           m2.min_spans, ' ', mention_to_gold[m], ' ',
+                        #           mention_to_gold[m2], ' ' ,
+                        #           [str(s) for s in output_clusters[
+                        #               mention_to_gold[m]]], ' -- ',
+                        #           [str(s) for s in output_clusters[
+                        #               mention_to_gold[m2]]])
 
         num += len(c) * common_links / float(all_links)
         dem += len(c)
-
 
     return num, dem
