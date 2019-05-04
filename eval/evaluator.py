@@ -123,7 +123,7 @@ def mentions(clusters, mention_to_gold):
 
 
 def b_cubed(clusters, mention_to_gold):
-    num, dem = 0, 0
+    num, den = 0, 0
 
     for c in clusters:
         gold_counts = Counter()
@@ -135,9 +135,9 @@ def b_cubed(clusters, mention_to_gold):
             correct += gold_counts[c2] * gold_counts[c2]
 
         num += correct / float(len(c))
-        dem += len(c)
+        den += len(c)
 
-    return num, dem
+    return num, den
 
 
 def muc(clusters, mention_to_gold):
@@ -171,7 +171,7 @@ def ceafe(clusters, gold_clusters):
 
 
 def lea(input_clusters, output_clusters, mention_to_gold):
-    num, dem = 0, 0
+    num, den = 0, 0
 
     for c in input_clusters:
         if len(c) == 1:
@@ -200,6 +200,6 @@ def lea(input_clusters, output_clusters, mention_to_gold):
                         #               mention_to_gold[m2]]])
 
         num += len(c) * common_links / float(all_links)
-        dem += len(c)
+        den += len(c)
 
-    return num, dem
+    return num, den
