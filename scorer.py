@@ -13,8 +13,8 @@ def main():
 
     NP_only = 'NP_only' in sys.argv
     remove_nested = 'remove_nested' in sys.argv
-    keep_singletons = ('remove_singletons' in sys.argv
-            or 'remove_singleton' in sys.argv)
+    keep_singletons = ('remove_singletons' not in sys.argv
+            and 'remove_singleton' not in sys.argv)
 
     if 'all' in sys.argv:
         metrics = allmetrics
