@@ -6,7 +6,7 @@ See the paper [Which Coreference Evaluation Metric Do You Trust? A Proposal for
 a Link-based Entity Aware Metric](https://www.aclweb.org/anthology/P16-1060).
 
 ### Requirements
-This evaluation tool requires numpy, scipy, and scikit-learn packages.
+This evaluation tool requires numpy and scipy packages.
 
 ## Usage
 Basic usage with CoNLL files:

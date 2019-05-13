@@ -3,7 +3,7 @@ https://github.com/clarkkev/deep-coref/blob/master/evaluation.py
 """
 from collections import Counter
 import numpy as np
-from sklearn.utils.linear_assignment_ import linear_assignment
+from scipy.optimize import linear_sum_assignment
 
 
 def f1(p_num, p_den, r_num, r_den, beta=1):
@@ -165,8 +165,8 @@ def ceafe(clusters, gold_clusters):
     for i in range(len(gold_clusters)):
         for j in range(len(clusters)):
             scores[i, j] = phi4(gold_clusters[i], clusters[j])
-    matching = linear_assignment(-scores)
-    similarity = sum(scores[matching[:, 0], matching[:, 1]])
+    row_ind, col_ind = linear_sum_assignment(-scores)
+    similarity = scores[row_ind, col_ind].sum()
     return similarity, len(clusters), similarity, len(gold_clusters)
 
 
