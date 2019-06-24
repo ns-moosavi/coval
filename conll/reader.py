@@ -6,7 +6,6 @@ def get_doc_mentions(doc_name, doc_lines, keep_singletons,
         print_debug=False, word_column=3):
     clusters = {}
     open_mentions = {}
-    to_be_merged = []
     singletons_num = 0
 
     for sent_num, sent_line in enumerate(doc_lines):
@@ -26,8 +25,6 @@ def get_doc_mentions(doc_name, doc_lines, keep_singletons,
                     if c not in clusters:
                         clusters[c] = []
                     clusters[c].append(m)
-                if len(single_token_coref) > 1:
-                    to_be_merged.append(single_token_coref)
 
             for c in open_corefs:
                 if c in open_mentions:
@@ -65,15 +62,6 @@ def get_doc_mentions(doc_name, doc_lines, keep_singletons,
         singletons_num += len(singletons)
         for c in sorted(singletons, reverse=True):
             clusters.pop(c)
-
-    for l in to_be_merged:
-        print('Merging ' + str(l) + ' clusters')
-        merged = []
-        first = l[0]
-        for c in l:
-            merged.extend(clusters[c])
-            clusters.pop(c)
-        clusters[first] = merged
 
     return [clusters[c] for c in clusters], singletons_num
 
@@ -139,8 +127,7 @@ def extract_coref_annotation(line):
                 open_corefs.append(int(''.join(last_num)))
 
     if len(single_token_coref) > 1:
-        print('A single mention cannot be assigned to more than one cluster\n'
-                'The following clusters will be merged: %s'
+        print('Warning: A single mention is assigned to more than one cluster: %s'
                 % single_token_coref)
 
     return single_token_coref, open_corefs, ending_corefs
