@@ -50,3 +50,11 @@ By including the 'remove_singletons' or 'remove_singleton' options, all singleto
 
 
 Most of the recent coreference resolvers only resolve NP mentions and leave out the resolution of VPs.
+By including the 'NP_only' option, the scorer will only evaluate the resolution of NPs.
+
+3) Using minimum spans
+
+By including any of the 'min', 'min_span', or 'min_spans' options, the scorer reports the results based on automatically detected minimum spans.
+Minimum spans are determined using the MINA algorithm.
+
+
