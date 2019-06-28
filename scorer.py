@@ -1,5 +1,6 @@
 import sys
 from conll import reader
+from conll import util
 from eval import evaluator
 
 
@@ -14,7 +15,17 @@ def main():
     NP_only = 'NP_only' in sys.argv
     remove_nested = 'remove_nested' in sys.argv
     keep_singletons = ('remove_singletons' not in sys.argv
-            and 'remove_singleton' not in sys.argv)
+            and 'removIe_singleton' not in sys.argv)
+    min_span = False
+    if ('min_span' in sys.argv 
+        or 'min_spans' in sys.argv
+        or 'min' in sys.argv):
+        min_span = True
+        has_gold_parse = util.check_gold_parse_annotation(key_file)
+        if not has_gold_parse:
+                util.parse_key_file(key_file)
+                key_file = key_file + ".parsed"
+
 
     if 'all' in sys.argv:
         metrics = allmetrics
@@ -25,13 +36,13 @@ def main():
             metrics = allmetrics
 
     evaluate(key_file, sys_file, metrics, NP_only, remove_nested,
-            keep_singletons)
+            keep_singletons, min_span)
 
 
 def evaluate(key_file, sys_file, metrics, NP_only, remove_nested,
-        keep_singletons):
+        keep_singletons, min_span):
     doc_coref_infos = reader.get_coref_infos(key_file, sys_file, NP_only,
-            remove_nested, keep_singletons)
+            remove_nested, keep_singletons, min_span)
 
     conll = 0
     conll_subparts_num = 0
