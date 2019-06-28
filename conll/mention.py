@@ -18,10 +18,6 @@ class Mention:
             if self.min_spans:
                 return self.doc_name == other.doc_name and self.sent_num == other.sent_num \
                        and self.min_spans==other.min_spans
-            elif self.head:
-                return self.doc_name == other.doc_name and self.sent_num == other.sent_num \
-                       and self.head==other.head
-
             else:
                 return self.doc_name == other.doc_name and self.sent_num == other.sent_num \
                    and self.start == other.start and self.end == other.end 
@@ -41,9 +37,6 @@ class Mention:
     def __hash__(self):
         if self.min_spans:
             return self.sent_num * 1000000 + hash(frozenset(self.min_spans))
-        elif self.head:
-            return self.sent_num * 1000000 + hash(frozenset(self.head))
-
         else:
             return self.sent_num * 1000000 + hash(frozenset((self.start, self.end)))
 
