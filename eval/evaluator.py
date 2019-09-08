@@ -158,28 +158,33 @@ def muc(clusters, mention_to_gold):
 def phi4(c1, c2):
     return 2 * len([m for m in c1 if m in c2]) / float(len(c1) + len(c2))
 
+
 def phi3(c1, c2):
     return len([m for m in c1 if m in c2])
 
-def ceafe(clusters, gold_clusters):
+
+def ceaf(clusters, gold_clusters, sim_func):
     clusters = [c for c in clusters]
     scores = np.zeros((len(gold_clusters), len(clusters)))
     for i in range(len(gold_clusters)):
         for j in range(len(clusters)):
-            scores[i, j] = phi4(gold_clusters[i], clusters[j])
+            scores[i, j] = sim_func(gold_clusters[i], clusters[j])
     row_ind, col_ind = linear_sum_assignment(-scores)
     similarity = scores[row_ind, col_ind].sum()
-    return similarity, len(clusters), similarity, len(gold_clusters)
+    return similarity
+
+
+def ceafe(clusters, gold_clusters):
+    similarity = ceaf(clusters, gold_clusters, phi4)
+    sys_denom, gold_denom = len(clusters), len(gold_clusters)
+    return similarity, sys_denom, similarity, gold_denom
+
 
 def ceafm(clusters, gold_clusters):
-    clusters = [c for c in clusters]
-    scores = np.zeros((len(gold_clusters), len(clusters)))
-    for i in range(len(gold_clusters)):
-        for j in range(len(clusters)):
-            scores[i, j] = phi3(gold_clusters[i], clusters[j])
-    row_ind, col_ind = linear_sum_assignment(-scores)
-    similarity = scores[row_ind, col_ind].sum()
-    return similarity, len(clusters), similarity, len(gold_clusters)
+    similarity = ceaf(clusters, gold_clusters, phi3)
+    sys_denom = sum([len(c) for c in clusters])
+    gold_denom = sum([len(c) for c in gold_clusters])
+    return similarity, sys_denom, similarity, gold_denom
 
 
 def lea(input_clusters, output_clusters, mention_to_gold):
