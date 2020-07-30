@@ -1,5 +1,5 @@
 import sys
-from conll import mention
+from coval.conll import mention
 
 
 def get_doc_mentions(doc_name, doc_lines, keep_singletons,
