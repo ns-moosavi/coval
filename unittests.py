@@ -1,7 +1,7 @@
 from pytest import approx
-from conll.reader import get_coref_infos
-from eval.evaluator import evaluate_documents as evaluate
-from eval.evaluator import muc, b_cubed, ceafe, lea
+from coval.conll.reader import get_coref_infos
+from coval.eval.evaluator import evaluate_documents as evaluate
+from coval.eval.evaluator import muc, b_cubed, ceafe, lea
 
 TOL = 1e-4
 

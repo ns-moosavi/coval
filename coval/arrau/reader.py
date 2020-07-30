@@ -1,6 +1,6 @@
 from os import walk
 from os.path import isfile, join
-from arrau import markable
+from coval.arrau import markable
 
 __author__ = 'ns-moosavi'
 
