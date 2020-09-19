@@ -9,9 +9,9 @@ Options:
     min_spans                 score with minimal spans using MINA algorithm
                               (default: off)"""
 import sys
-from conll import reader
-from conll import util
-from eval import evaluator
+from coval.conll import reader
+from coval.conll import util
+from coval.eval import evaluator
 
 
 def main():

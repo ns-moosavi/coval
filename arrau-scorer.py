@@ -1,7 +1,7 @@
 import sys
-from arrau import reader
-from eval import evaluator
-from eval.evaluator import evaluate_non_referrings
+from coval.arrau import reader
+from coval.eval import evaluator
+from coval.eval.evaluator import evaluate_non_referrings
 
 __author__ = 'ns-moosavi'
 
