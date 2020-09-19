@@ -156,15 +156,16 @@ def muc(clusters, mention_to_gold):
 
 
 def phi4(c1, c2):
-    return 2 * len([m for m in c1 if m in c2]) / float(len(c1) + len(c2))
+    return 2. * len(c1 & c2) / (len(c1) + len(c2))
 
 
 def phi3(c1, c2):
-    return len([m for m in c1 if m in c2])
+    return len(c1 & c2)
 
 
 def ceaf(clusters, gold_clusters, sim_func):
-    clusters = [c for c in clusters]
+    clusters = [set(c) for c in clusters]
+    gold_clusters = [set(c) for c in gold_clusters]
     scores = np.zeros((len(gold_clusters), len(clusters)))
     for i in range(len(gold_clusters)):
         for j in range(len(clusters)):

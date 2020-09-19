@@ -1,3 +1,4 @@
+from __future__ import division
 from pytest import approx
 from coval.conll.reader import get_coref_infos
 from coval.eval.evaluator import evaluate_documents as evaluate
@@ -307,3 +308,10 @@ def test_N5():
 def test_N6():
     doc = read('TC-N.key', 'TC-N-6.response')
     assert evaluate(doc, lea) == approx([0, 0, 0])
+
+
+def test_O(capsys):
+    doc = read('TC-O.key', 'TC-O.key')
+    captured = capsys.readouterr()
+    assert 'Warning: ignoring 1 in 1|(2\n' in captured.out
+    assert evaluate(doc, lea) == (1., 1., 1.)

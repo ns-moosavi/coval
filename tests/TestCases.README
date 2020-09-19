@@ -398,3 +398,7 @@ Rsp/Sys: {ab} {cxy} {z}
 
 Expected: BLANC=0.15 [recall_n=2/15, prec_n=2/11]
 Expected: LEA=0      [recall=0, prec=0]
+
+TC-O - Number without start or end parenthesis before '|' in coreference column: "1|(2"
+
+Expected: Warning.

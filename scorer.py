@@ -66,17 +66,18 @@ def evaluate(key_file, sys_file, metrics, NP_only, remove_nested,
 
     print('             recall  precision         F1')
     for name, metric in metrics:
-        recall, precision, f1 = evaluator.evaluate_documents(doc_coref_infos,
+        recall, precision, f1 = evaluator.evaluate_documents(
+                doc_coref_infos,
                 metric,
                 beta=1)
         if name in ('muc', 'bcub', 'ceafe'):
             conll += f1
             conll_subparts_num += 1
-        print(
+        print('%s     %6.2f     %6.2f     %6.2f' % (
                 name.ljust(8),
-                '    %6.2f' % (recall * 100),
-                '    %6.2f' % (precision * 100),
-                '    %6.2f' % (f1 * 100))
+                recall * 100,
+                precision * 100,
+                f1 * 100))
 
     if conll_subparts_num == 3:
         conll = (conll / 3) * 100
