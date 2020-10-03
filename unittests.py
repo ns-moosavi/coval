@@ -1,7 +1,8 @@
+from __future__ import division
 from pytest import approx
 from coval.conll.reader import get_coref_infos
 from coval.eval.evaluator import evaluate_documents as evaluate
-from coval.eval.evaluator import muc, b_cubed, ceafe, lea
+from coval.eval.evaluator import muc, b_cubed, ceafe, ceafm, lea
 
 TOL = 1e-4
 
@@ -15,6 +16,7 @@ def test_A1():
     doc = read('TC-A.key', 'TC-A-1.response')
     assert evaluate(doc, muc) == (1, 1, 1)
     assert evaluate(doc, b_cubed) == (1, 1, 1)
+    assert evaluate(doc, ceafm) == (1, 1, 1)
     assert evaluate(doc, ceafe) == (1, 1, 1)
     assert evaluate(doc, lea) == (1, 1, 1)
 
@@ -23,6 +25,7 @@ def test_A2():
     doc = read('TC-A.key', 'TC-A-2.response')
     assert evaluate(doc, muc) == approx([1 / 3, 1 / 1, 1 / 2])
     assert evaluate(doc, b_cubed) == approx([(7 / 3) / 6, 3 / 3, 14 / 25])
+    assert evaluate(doc, ceafm) == approx([0.5, 1, 2 / 3])
     assert evaluate(doc, ceafe) == approx([0.6, 0.9, 0.72])
     assert evaluate(doc, lea) == approx([(1 + 3 * (1 / 3)) / 6, 1, 0.5])
 
@@ -32,6 +35,7 @@ def test_A3():
     assert evaluate(doc, muc) == approx([3 / 3, 3 / 5, 0.75])
     assert evaluate(doc,
             b_cubed) == approx([6 / 6, (4 + 7 / 12) / 9, 110 / 163])
+    assert evaluate(doc, ceafm) == approx([1, 2 / 3, 0.8])
     assert evaluate(doc, ceafe) == approx([0.88571, 0.66429, 0.75918], abs=TOL)
     assert evaluate(doc, lea) == approx([
             1, (1 + 3 * (1 / 3) + 4 * (3 / 6)) / 9,
@@ -45,8 +49,7 @@ def test_A4():
     assert evaluate(doc, muc) == approx([1 / 3, 1 / 3, 1 / 3])
     assert evaluate(doc, b_cubed) == approx([
             (3 + 1 / 3) / 6, (1 + 4 / 3 + 1 / 2) / 7,
-            2 * (5 / 9) * (17 / 42) / ((5 / 9) + (17 / 42))
-    ])
+            2 * (5 / 9) * (17 / 42) / ((5 / 9) + (17 / 42))])
     assert evaluate(doc, ceafe) == approx([0.73333, 0.55, 0.62857], abs=TOL)
     assert evaluate(doc, lea) == approx([(1 + 2 + 0) / 6,
             (1 + 3 * (1 / 3) + 2 * 0 + 0) / 7,
@@ -58,8 +61,8 @@ def test_A5():
     assert evaluate(doc, muc) == approx([1 / 3, 1 / 4, 2 / 7])
     assert evaluate(doc, b_cubed) == approx([
             (3 + 1 / 3) / 6, 2.5 / 8,
-            2 * (5 / 9) * (5 / 16) / ((5 / 9) + (5 / 16))
-    ])
+            2 * (5 / 9) * (5 / 16) / ((5 / 9) + (5 / 16))])
+    assert evaluate(doc, ceafm) == approx([0.66667, 0.5, 0.57143], abs=TOL)
     assert evaluate(doc, ceafe) == approx([0.68889, 0.51667, 0.59048], abs=TOL)
     assert evaluate(doc,
             lea) == approx([(1 + 2 + 3 * 0) / 6,
@@ -72,8 +75,8 @@ def test_A6():
     assert evaluate(doc, muc) == approx([1 / 3, 1 / 4, 2 / 7])
     assert evaluate(doc, b_cubed) == approx([
             (10 / 3) / 6, (1 + 4 / 3 + 1 / 2) / 8,
-            2 * (5 / 9) * (17 / 48) / ((5 / 9) + (17 / 48))
-    ])
+            2 * (5 / 9) * (17 / 48) / ((5 / 9) + (17 / 48))])
+    assert evaluate(doc, ceafm) == approx([0.66667, 0.5, 0.57143], abs=TOL)
     assert evaluate(doc, ceafe) == approx([0.73333, 0.55, 0.62857], abs=TOL)
     assert evaluate(doc, lea) == approx([(1 + 2 + 3 * 0) / 6,
             (1 + 3 / 3 + 2 * 0 + 2 * 0) / 8,
@@ -85,8 +88,8 @@ def test_A7():
     assert evaluate(doc, muc) == approx([1 / 3, 1 / 3, 1 / 3])
     assert evaluate(doc, b_cubed) == approx([
             (10 / 3) / 6, (1 + 4 / 3 + 1 / 2) / 7,
-            2 * (5 / 9) * (17 / 42) / ((5 / 9) + (17 / 42))
-    ])
+            2 * (5 / 9) * (17 / 42) / ((5 / 9) + (17 / 42))])
+    assert evaluate(doc, ceafm) == approx([0.66667, 0.57143, 0.61538], abs=TOL)
     assert evaluate(doc, ceafe) == approx([0.73333, 0.55, 0.62857], abs=TOL)
     assert evaluate(doc, lea) == approx([(1 + 2 + 3 * 0) / 6,
             (1 + 3 / 3 + 2 * 0 + 1 * 0) / 7,
@@ -233,6 +236,7 @@ def test_M1():
     doc = read('TC-M.key', 'TC-M-1.response')
     assert evaluate(doc, muc) == approx([1, 1, 1])
     assert evaluate(doc, b_cubed) == approx([1, 1, 1])
+    assert evaluate(doc, ceafm) == approx([1, 1, 1])
     assert evaluate(doc, ceafe) == approx([1, 1, 1])
     assert evaluate(doc, lea) == approx([1, 1, 1])
 
@@ -304,3 +308,10 @@ def test_N5():
 def test_N6():
     doc = read('TC-N.key', 'TC-N-6.response')
     assert evaluate(doc, lea) == approx([0, 0, 0])
+
+
+def test_O(capsys):
+    doc = read('TC-O.key', 'TC-O.key')
+    captured = capsys.readouterr()
+    assert 'Warning: ignoring 1 in 1|(2\n' in captured.out
+    assert evaluate(doc, lea) == (1., 1., 1.)

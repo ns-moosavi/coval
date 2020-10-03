@@ -14,7 +14,6 @@ def get_doc_mentions(doc_name, doc_lines, keep_singletons,
 
             sent_words.append(line.split()[word_column]
                     if len(line.split()) > word_column + 1 else '')
-
             single_token_coref, open_corefs, end_corefs = (
                     extract_coref_annotation(line))
 
@@ -38,7 +37,7 @@ def get_doc_mentions(doc_name, doc_lines, keep_singletons,
                 if c not in clusters:
                     clusters[c] = []
                 if c not in open_mentions:
-                    print('Problem in the coreference annotation:\n', line)
+                    print('End of mention without start of mention:\n', line)
                 else:
                     if open_mentions[c][0][0] != sent_num:
                         print('A mention span should be in a single sentence:')
@@ -118,17 +117,18 @@ def extract_coref_annotation(line):
             if coref_opened:
                 open_corefs.append(int(''.join(last_num)))
                 coref_opened = False
-                last_num = []
             elif len(last_num) > 0:
-                sys.exit("Incorrect coreference annotation: ", coref_column)
+                print('Warning: ignoring %s in %s' % (
+                        ''.join(last_num), coref_column))
+            last_num = []
 
         if i == len(coref_column) - 1:
             if coref_opened and len(last_num) > 0:
                 open_corefs.append(int(''.join(last_num)))
 
     if len(single_token_coref) > 1:
-        print('Warning: A single mention is assigned to more than one cluster: %s'
-                % single_token_coref)
+        print('Warning: A single mention is assigned to more than one cluster:'
+                ' %s' % single_token_coref)
 
     return single_token_coref, open_corefs, ending_corefs
 
@@ -149,7 +149,7 @@ def extract_annotated_parse(mention_lines, start_index,
         for j, c in enumerate(parse):
             if c == '(':
                 if tag_started:
-                    node = mention.TreeNode(''.join(tag_name), pos_tags, 
+                    node = mention.TreeNode(''.join(tag_name), pos_tags,
                             start_index + i, False)
                     if open_nodes:
                         if open_nodes[-1].children:
@@ -161,8 +161,8 @@ def extract_annotated_parse(mention_lines, start_index,
                     tag_name = []
                 if terminal_nodes:
                     # skipping words like commas, quotations and parantheses
-                    if any(c.isalpha() for c in terminal_nodes) or \
-                       any(c.isdigit() for c in terminal_nodes):
+                    if (any(c.isalpha() for c in terminal_nodes)
+                            or any(c.isdigit() for c in terminal_nodes)):
                         node = mention.TreeNode(' '.join(terminal_nodes),
                                 pos_tags, start_index + i, True)
                         if open_nodes:
@@ -175,14 +175,13 @@ def extract_annotated_parse(mention_lines, start_index,
                     terminal_nodes = []
                     pos_tags = []
 
-
                 tag_started = True
 
             elif c == '*':
                 terminal_nodes.append(line.split()[word_column])
                 pos_tags.append(line.split()[POS_column])
-                node = mention.TreeNode(''.join(tag_name), None,  
-                        start_index+i, False)
+                node = mention.TreeNode(''.join(tag_name), None,
+                        start_index + i, False)
 
                 if tag_started:
                     if open_nodes:
@@ -223,8 +222,9 @@ def extract_annotated_parse(mention_lines, start_index,
             elif c.isalpha():
                 tag_name.append(c)
 
-            if (i == len(mention_lines) - 1 and 
-                    j == len(parse) - 1 and terminal_nodes):
+            if (i == len(mention_lines) - 1
+                    and j == len(parse) - 1
+                    and terminal_nodes):
                 node = mention.TreeNode(' '.join(terminal_nodes),
                         pos_tags, start_index + i, True)
                 if open_nodes:
@@ -254,7 +254,6 @@ def extract_annotated_parse(mention_lines, start_index,
     return root
 
 
-
 def set_annotated_parse_trees(clusters, key_doc_lines, NP_only, min_span,
         partial_vp_chain_pruning=True, print_debug=False):
     pruned_cluster_indices = set()
@@ -271,7 +270,7 @@ def set_annotated_parse_trees(clusters, key_doc_lines, NP_only, min_span,
 
             m.set_gold_parse(tree)
 
-            ##If the conll file does not have words
+            # If the conll file does not have words
             if not m.words[0]:
                 terminals = []
                 m.gold_parse.get_terminals(terminals)
@@ -341,7 +340,7 @@ def remove_nested_coref_mentions(clusters, keep_singletons, print_debug=False):
         to_be_removed_mentions[c_index] = []
 
         for i, m1 in enumerate(c):
-            for m2 in c[i+1:]:
+            for m2 in c[i + 1:]:
                 nested = m1.are_nested(m2)
                 # m1 is nested in m2
                 if nested == 0:
